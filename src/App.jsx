@@ -12,6 +12,8 @@ function App() {
   const selectedPlace = useRef();
   const [pickedPlaces, setPickedPlaces] = useState([]);
 
+  //find user locations and sort them by distance. This is also called a Side Effect
+  //Not directly effects the component itself
   let x = navigator.geolocation.getCurrentPosition((position) => {
     // console.log("Device coordinates:", position);
     const sortedPlaces = sortPlacesByDistance(
