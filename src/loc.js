@@ -24,5 +24,6 @@ export function sortPlacesByDistance(places, lat, lon) {
     const distanceB = calculateDistance(lat, lon, b.lat, b.lon);
     return distanceA - distanceB;
   });
+  console.log("sortedPlaces: ", sortedPlaces);
   return sortedPlaces;
 }

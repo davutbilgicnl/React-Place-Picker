@@ -10,6 +10,7 @@ import { sortPlacesByDistance } from "./loc.js";
 function App() {
   const modal = useRef();
   const selectedPlace = useRef();
+  const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState([]);
 
   //find user locations and sort them by distance. This is also called a Side Effect
@@ -21,6 +22,7 @@ function App() {
       position.coords.latitude,
       position.coords.altitude
     );
+    setAvailablePlaces(sortedPlaces);
   });
 
   function handleStartRemovePlace(id) {
@@ -75,7 +77,7 @@ function App() {
         />
         <Places
           title="Available Places"
-          places={AVAILABLE_PLACES}
+          places={availablePlaces}
           onSelectPlace={handleSelectPlace}
         />
       </main>
