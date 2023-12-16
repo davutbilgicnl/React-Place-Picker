@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Places from "./components/Places.jsx";
 import { AVAILABLE_PLACES } from "./data.js";
@@ -13,17 +13,17 @@ function App() {
   const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState([]);
 
-  //find user locations and sort them by distance. This is also called a Side Effect
-  //Not directly effects the component itself
-  let x = navigator.geolocation.getCurrentPosition((position) => {
-    // console.log("Device coordinates:", position);
-    const sortedPlaces = sortPlacesByDistance(
-      AVAILABLE_PLACES,
-      position.coords.latitude,
-      position.coords.altitude
-    );
-    setAvailablePlaces(sortedPlaces);
-  });
+  useEffect(() => {
+    //added Side Effect part here
+    let x = navigator.geolocation.getCurrentPosition((position) => {
+      const sortedPlaces = sortPlacesByDistance(
+        AVAILABLE_PLACES,
+        position.coords.latitude,
+        position.coords.longitude
+      );
+      setAvailablePlaces(sortedPlaces);
+    });
+  }, []); //if you omit that [](dependencies array), it'll continue to the loop.
 
   function handleStartRemovePlace(id) {
     modal.current.open();
@@ -78,6 +78,7 @@ function App() {
         <Places
           title="Available Places"
           places={availablePlaces}
+          fallbackText={"Sorting places by distance..."}
           onSelectPlace={handleSelectPlace}
         />
       </main>
