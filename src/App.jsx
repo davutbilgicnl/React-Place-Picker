@@ -6,11 +6,10 @@ import Modal from "./components/Modal.jsx";
 import DeleteConfirmation from "./components/DeleteConfirmation.jsx";
 import logoImg from "./assets/logo.png";
 import { sortPlacesByDistance } from "./loc.js";
+import AvailablePlaces from "./components/AvailablePlaces.jsx";
 
 const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
-const storedPlaces = storedIds.map((id) =>
-  AVAILABLE_PLACES.find((place) => place.id === id)
-);
+const storedPlaces = storedIds.map((id) => AVAILABLE_PLACES.find((place) => place.id === id));
 
 function App() {
   const modal = useRef();
@@ -49,10 +48,7 @@ function App() {
 
     const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
     if (storedIds.indexOf(id) === -1) {
-      localStorage.setItem(
-        "selectedPlaces",
-        JSON.stringify([id, ...storedIds])
-      );
+      localStorage.setItem("selectedPlaces", JSON.stringify([id, ...storedIds]));
     }
   }
 
@@ -72,18 +68,14 @@ function App() {
   return (
     <>
       <Modal ref={modal}>
-        <DeleteConfirmation
-          onCancel={handleStopRemovePlace}
-          onConfirm={handleRemovePlace}
-        />
+        <DeleteConfirmation onCancel={handleStopRemovePlace} onConfirm={handleRemovePlace} />
       </Modal>
 
       <header>
         <img src={logoImg} alt="Stylized globe" />
         <h1>PlacePicker</h1>
         <p>
-          Create your personal collection of places you would like to visit or
-          you have visited.
+          Create your personal collection of places you would like to visit or you have visited.
         </p>
       </header>
       <main>
@@ -99,6 +91,8 @@ function App() {
           fallbackText={"Sorting places by distance..."}
           onSelectPlace={handleSelectPlace}
         />
+
+        <AvailablePlaces onSelectPlace={handleSelectPlace} />
       </main>
     </>
   );
