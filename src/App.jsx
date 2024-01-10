@@ -85,12 +85,12 @@ function App() {
           places={pickedPlaces}
           onSelectPlace={handleStartRemovePlace}
         />
-        <Places
+        {/* <Places
           title="Available Places"
           places={availablePlaces}
           fallbackText={"Sorting places by distance..."}
           onSelectPlace={handleSelectPlace}
-        />
+        /> */}
 
         <AvailablePlaces onSelectPlace={handleSelectPlace} />
       </main>

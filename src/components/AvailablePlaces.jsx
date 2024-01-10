@@ -1,22 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Places from "./Places.jsx";
 
 export default function AvailablePlaces({ onSelectPlace }) {
   const [availablePlaces, setAvailablePlaces] = useState([]);
 
-  //This couse infinite loop. Because in every update to the setAvailablePlaces will couse rerender, and rerender will couse to run fetch
-  fetch("http://localhost:3000/places")
-    .then((response) => {
-      return response.json();
-    })
-    .then((resData) => {
-      setAvailablePlaces(resData.places);
-    });
+  useEffect(() => {
+    fetch("http://localhost:3000/placess")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response wan not ok");
+        }
+        return response.json();
+      })
+      .then((resData) => {
+        setAvailablePlaces(resData.places);
+      })
+      .catch((error) => {
+        console.error("Fetch error: ", error);
+      });
+  }, []);
 
   return (
     <Places
       title="Available Places"
-      places={[]}
+      places={availablePlaces}
       fallbackText="No places available."
       onSelectPlace={onSelectPlace}
     />
