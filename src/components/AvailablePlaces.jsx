@@ -1,7 +1,9 @@
+import { useState } from "react";
 import Places from "./Places.jsx";
 
 export default function AvailablePlaces({ onSelectPlace }) {
-  //todo: Fetch available places from backend API
+  const [availablePlaces, setAvailablePlaces] = useState([]);
+
   return (
     <Places
       title="Available Places"
