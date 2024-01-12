@@ -7,6 +7,7 @@ import DeleteConfirmation from "./components/DeleteConfirmation.jsx";
 import logoImg from "./assets/logo.png";
 import { sortPlacesByDistance } from "./loc.js";
 import AvailablePlaces from "./components/AvailablePlaces.jsx";
+import { updateUserPlaces } from "./http.js";
 
 const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
 const storedPlaces = storedIds.map((id) => AVAILABLE_PLACES.find((place) => place.id === id));
@@ -16,6 +17,8 @@ function App() {
   const selectedPlace = useRef();
   const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
+
+  const [userPlaces, setUserPlaces] = useState([]);
 
   useEffect(() => {
     let x = navigator.geolocation.getCurrentPosition((position) => {
@@ -37,18 +40,37 @@ function App() {
     modal.current.close();
   }
 
-  function handleSelectPlace(id) {
-    setPickedPlaces((prevPickedPlaces) => {
-      if (prevPickedPlaces.some((place) => place.id === id)) {
+  async function handleSelectPlace(selectedPlace) {
+    // setPickedPlaces((prevPickedPlaces) => {
+    //   if (prevPickedPlaces.some((place) => place.id === id)) {
+    //     return prevPickedPlaces;
+    //   }
+    //   const place = AVAILABLE_PLACES.find((place) => place.id === id);
+    //   return [place, ...prevPickedPlaces];
+    // });
+
+    // const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+    // if (storedIds.indexOf(id) === -1) {
+    //   localStorage.setItem("selectedPlaces", JSON.stringify([id, ...storedIds]));
+    // }
+
+    setUserPlaces((prevPickedPlaces) => {
+      if (!prevPickedPlaces) {
+        prevPickedPlaces = [];
+      }
+
+      if (prevPickedPlaces.some((place) => place.id === selectedPlace.id)) {
         return prevPickedPlaces;
       }
-      const place = AVAILABLE_PLACES.find((place) => place.id === id);
-      return [place, ...prevPickedPlaces];
+
+      return [selectedPlace, ...prevPickedPlaces];
     });
 
-    const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
-    if (storedIds.indexOf(id) === -1) {
-      localStorage.setItem("selectedPlaces", JSON.stringify([id, ...storedIds]));
+    try {
+      //used like this [selectedPlace, ...userPlaces] instead of updateUserPlaces(userPlaces), because the component wil not be awailable in due to rerendering
+      await updateUserPlaces([selectedPlace, ...userPlaces]);
+    } catch (error) {
+      //...
     }
   }
 
@@ -82,15 +104,9 @@ function App() {
         <Places
           title="I'd like to visit ..."
           fallbackText={"Select the places you would like to visit below."}
-          places={pickedPlaces}
+          places={userPlaces}
           onSelectPlace={handleStartRemovePlace}
         />
-        {/* <Places
-          title="Available Places"
-          places={availablePlaces}
-          fallbackText={"Sorting places by distance..."}
-          onSelectPlace={handleSelectPlace}
-        /> */}
 
         <AvailablePlaces onSelectPlace={handleSelectPlace} />
       </main>
