@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+
 import Places from "./Places.jsx";
 import Error from "./Error.jsx";
 import { sortPlacesByDistance } from "../loc.js";
 import { fetchAvailablePlaces } from "../http.js";
 
 export default function AvailablePlaces({ onSelectPlace }) {
-  const [isFetchingPlaces, setIsFetchingPlaces] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [availablePlaces, setAvailablePlaces] = useState([]);
   const [error, setError] = useState();
 
   useEffect(() => {
     async function fetchPlaces() {
-      setIsFetchingPlaces(true);
+      setIsFetching(true);
 
       try {
         const places = await fetchAvailablePlaces();
@@ -22,13 +23,14 @@ export default function AvailablePlaces({ onSelectPlace }) {
             position.coords.latitude,
             position.coords.longitude
           );
-
           setAvailablePlaces(sortedPlaces);
-          setIsFetchingPlaces(false);
+          setIsFetching(false);
         });
       } catch (error) {
-        setError({ message: error.message || "Could not retch places, please try again later." });
-        setIsFetchingPlaces(false);
+        setError({
+          message: error.message || "Could not fetch places, please try again later.",
+        });
+        setIsFetching(false);
       }
     }
 
@@ -36,15 +38,15 @@ export default function AvailablePlaces({ onSelectPlace }) {
   }, []);
 
   if (error) {
-    return <Error title="An error occured!" message={error.message} />;
+    return <Error title="An error occurred!" message={error.message} />;
   }
 
   return (
     <Places
       title="Available Places"
       places={availablePlaces}
-      isLoading={isFetchingPlaces}
-      loadingText="Fetching places..."
+      isLoading={isFetching}
+      loadingText="Fetching place data..."
       fallbackText="No places available."
       onSelectPlace={onSelectPlace}
     />
